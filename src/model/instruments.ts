@@ -34,6 +34,8 @@ export interface Instrument {
   range?: InstrumentRange;
   /** Leave the source clef and part name untouched (the generic concert-pitch entry). */
   keepClef?: boolean;
+  /** Played with a bow, so up-bow and down-bow marks mean something. */
+  bowed?: boolean;
   /** Patterns matched against a normalized part name, subtitle, file name or title. */
   detect?: RegExp[];
 }
@@ -118,10 +120,10 @@ export const INSTRUMENTS: Instrument[] = [
   { id: 'accordion', name: 'Accordion', family: 'Keyboards', short: 'Acc.', transpose: T(0, 0), clef: TREBLE, range: r('F2', 'A6'), detect: [/\baccordions?\b/] },
 
   // Strings
-  { id: 'violin', name: 'Violin', family: 'Strings', short: 'Vln.', transpose: T(0, 0), clef: TREBLE, range: r('G3', 'E7'), detect: [/\bviolins?\b/, /\bvln\b/, /\bfiddle\b/] },
-  { id: 'viola', name: 'Viola', family: 'Strings', short: 'Vla.', transpose: T(0, 0), clef: ALTO, range: r('C3', 'E6'), detect: [/\bviolas?\b/, /\bvla\b/] },
-  { id: 'cello', name: 'Cello', family: 'Strings', short: 'Vc.', transpose: T(0, 0), clef: BASS, range: r('C2', 'A5'), detect: [/\bcellos?\b/, /\bvioloncellos?\b/, /\bvlc\b/] },
-  { id: 'double-bass', name: 'Double Bass', family: 'Strings', short: 'Cb.', transpose: T(-7, -12), clef: BASS, range: r('E2', 'C5'), detect: [/\bdouble bass\b/, /\bcontrabass\b/, /\bstring bass\b/, /\bupright bass\b/] },
+  { id: 'violin', name: 'Violin', family: 'Strings', short: 'Vln.', transpose: T(0, 0), clef: TREBLE, range: r('G3', 'E7'), bowed: true, detect: [/\bviolins?\b/, /\bvln\b/, /\bfiddle\b/] },
+  { id: 'viola', name: 'Viola', family: 'Strings', short: 'Vla.', transpose: T(0, 0), clef: ALTO, range: r('C3', 'E6'), bowed: true, detect: [/\bviolas?\b/, /\bvla\b/] },
+  { id: 'cello', name: 'Cello', family: 'Strings', short: 'Vc.', transpose: T(0, 0), clef: BASS, range: r('C2', 'A5'), bowed: true, detect: [/\bcellos?\b/, /\bvioloncellos?\b/, /\bvlc\b/] },
+  { id: 'double-bass', name: 'Double Bass', family: 'Strings', short: 'Cb.', transpose: T(-7, -12), clef: BASS, range: r('E2', 'C5'), bowed: true, detect: [/\bdouble bass\b/, /\bcontrabass\b/, /\bstring bass\b/, /\bupright bass\b/] },
   { id: 'harp', name: 'Harp', family: 'Strings', short: 'Hp.', transpose: T(0, 0), clef: TREBLE, range: r('C1', 'G7'), detect: [/\bharps?\b/] },
   { id: 'guitar', name: 'Guitar', family: 'Strings', short: 'Gtr.', transpose: T(-7, -12), clef: TREBLE_8VB, range: r('E3', 'E6'), detect: [/\bguitars?\b/, /\bgtr\b/] },
   { id: 'bass-guitar', name: 'Bass Guitar', family: 'Strings', short: 'B. Gtr.', transpose: T(-7, -12), clef: BASS, range: r('E2', 'G4'), detect: [/\bbass guitars?\b/, /\belectric bass\b/] },

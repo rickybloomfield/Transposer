@@ -34,6 +34,8 @@ woodwinds, brass, pitched percussion, keyboards, strings and voices.
 - With more than one part, **Instrument part** chooses which one is re-notated; the rest keep their
   own key, so a B♭ trumpet part and its concert-pitch piano accompaniment print together correctly.
   Changing **Transpose to** still moves the whole score.
+- Up-bow and down-bow marks are dropped when the part moves to something that is not played with a
+  bow. Other articulations on the same note are left alone.
 - The exported MusicXML carries a `<transpose>` element, so MuseScore, Dorico, Finale and Sibelius
   know the part is a transposing one and can switch it to concert pitch themselves.
 

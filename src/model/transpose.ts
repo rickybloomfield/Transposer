@@ -89,27 +89,45 @@ export function expandMultiRests(score: Score): number {
 export interface InstrumentChange {
   /** Clef changes inside the piece that were dropped because they suited the old instrument. */
   droppedClefChanges: number;
+  /** Up-bow and down-bow marks dropped because the new instrument is not bowed. */
+  droppedBowings: number;
+}
+
+/** Bow markings mean nothing on a flute; drop them when the part leaves the string section. */
+function removeBowings(part: Part): number {
+  let removed = 0;
+  for (const m of part.measures) for (const st of m.staves) for (const ev of st.events) {
+    if (ev.kind !== 'note' || !ev.articulations) continue;
+    const kept = ev.articulations.filter((a) => a !== 'up-bow' && a !== 'down-bow');
+    if (kept.length === ev.articulations.length) continue;
+    removed += ev.articulations.length - kept.length;
+    if (kept.length) ev.articulations = kept;
+    else delete ev.articulations;
+  }
+  return removed;
 }
 
 /**
- * Re-label a part for `to`: put its usual clef at the start, drop clef changes that
- * belonged to the old instrument, and record the new transposition for MusicXML export.
+ * Re-label a part for `to`: put its usual clef at the start, drop clef changes and
+ * bowings that belonged to the old instrument, and record the new transposition for
+ * MusicXML export.
  * Pitches are moved separately by `transposeScore`.
  */
 export function applyInstrument(part: Part, to: Instrument): InstrumentChange {
   part.transpose = to.transpose.diatonic === 0 && to.transpose.chromatic === 0 ? undefined : { ...to.transpose };
-  if (to.keepClef) return { droppedClefChanges: 0 };
+  if (to.keepClef) return { droppedClefChanges: 0, droppedBowings: 0 };
   part.name = to.name;
   part.abbreviation = to.short;
-  if (part.staffCount !== 1 || !part.measures.length) return { droppedClefChanges: 0 };
-  let dropped = 0;
+  const droppedBowings = to.bowed ? 0 : removeBowings(part);
+  if (part.staffCount !== 1 || !part.measures.length) return { droppedClefChanges: 0, droppedBowings };
+  let droppedClefChanges = 0;
   part.measures.forEach((m, i) => {
     const staff = m.staves[0];
     if (!staff) return;
     if (i === 0) staff.clef = { ...to.clef };
-    else if (staff.clef) { delete staff.clef; dropped++; }
+    else if (staff.clef) { delete staff.clef; droppedClefChanges++; }
   });
-  return { droppedClefChanges: dropped };
+  return { droppedClefChanges, droppedBowings };
 }
 
 /** Interval taking the score's initial key to `targetFifths`. */

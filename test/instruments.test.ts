@@ -154,7 +154,11 @@ function melody(): Score {
         number: 1, key: -1, time: { beats: 4, beatType: 4 }, length: DIVISIONS * 4,
         staves: [{
           clef: { sign: 'C', line: 3 },
-          events: [{ kind: 'note', start: 0, duration: DIVISIONS * 4, type: 'whole', dots: 0, pitch: { step: 'F', alter: 0, octave: 4 }, voice: 1 }],
+          events: [{
+            kind: 'note', start: 0, duration: DIVISIONS * 4, type: 'whole', dots: 0,
+            pitch: { step: 'F', alter: 0, octave: 4 }, voice: 1,
+            articulations: ['down-bow', 'accent'],
+          }],
           directions: [],
         }],
       },
@@ -162,7 +166,11 @@ function melody(): Score {
         number: 2, length: DIVISIONS * 4,
         staves: [{
           clef: { sign: 'G', line: 2 },
-          events: [{ kind: 'note', start: 0, duration: DIVISIONS * 4, type: 'whole', dots: 0, pitch: { step: 'A', alter: 0, octave: 5 }, voice: 1 }],
+          events: [{
+            kind: 'note', start: 0, duration: DIVISIONS * 4, type: 'whole', dots: 0,
+            pitch: { step: 'A', alter: 0, octave: 5 }, voice: 1,
+            articulations: ['up-bow'],
+          }],
           directions: [],
         }],
       },
@@ -188,6 +196,33 @@ describe('applying an instrument to one part', () => {
     expect(change.droppedClefChanges).toBe(1);
     expect(score.parts[0].name).toBe('Clarinet in B♭');
     expect(score.parts[0].transpose).toEqual({ diatonic: -1, chromatic: -2 });
+  });
+
+  it('drops bow markings when the new instrument is not bowed', () => {
+    const score = melody();
+    const change = applyInstrument(score.parts[0], instrumentById('clarinet-bb'));
+    expect(change.droppedBowings).toBe(2);
+    const first = score.parts[0].measures[0].staves[0].events[0];
+    const second = score.parts[0].measures[1].staves[0].events[0];
+    // Other articulations on the same note stay put.
+    expect(first.kind === 'note' && first.articulations).toEqual(['accent']);
+    expect(second.kind === 'note' && second.articulations).toBeUndefined();
+  });
+
+  it('keeps bow markings between two bowed instruments', () => {
+    const score = melody();
+    const change = applyInstrument(score.parts[0], instrumentById('cello'));
+    expect(change.droppedBowings).toBe(0);
+    const note = score.parts[0].measures[0].staves[0].events[0];
+    expect(note.kind === 'note' && note.articulations).toEqual(['down-bow', 'accent']);
+  });
+
+  it('leaves bow markings alone for the concert-pitch entry', () => {
+    const score = melody();
+    const change = applyInstrument(score.parts[0], concert);
+    expect(change.droppedBowings).toBe(0);
+    const note = score.parts[0].measures[0].staves[0].events[0];
+    expect(note.kind === 'note' && note.articulations).toEqual(['down-bow', 'accent']);
   });
 
   it('leaves the clef and name alone for the concert-pitch entry', () => {

@@ -17,7 +17,7 @@ import {
   type Instrument,
   type InstrumentDetection,
 } from '../model/instruments';
-import { applyInstrument, expandMultiRests, initialPartKey, partsShareKey, transposedPitches, transposeScore } from '../model/transpose';
+import { applyInstrument, expandMultiRests, initialPartKey, partsShareKey, transposedPitches, transposeScore, type InstrumentChange } from '../model/transpose';
 import { writeMusicXml } from '../musicxml/writeMusicXml';
 import {
   DEFAULT_MUSIC_SIZE,
@@ -51,6 +51,7 @@ export class App {
   private detection?: InstrumentDetection;
   private sourceId = CONCERT_PITCH.id;
   private targetId = CONCERT_PITCH.id;
+  private change?: InstrumentChange;
 
   constructor(private root: HTMLElement) {
     this.render();
@@ -382,8 +383,9 @@ export class App {
     const partIv = this.partIv();
     const out = transposeScore(this.score!, (_part, index) => (index === this.partIndex ? partIv : shift));
     const target = this.target();
+    this.change = undefined;
     if (this.targetId !== this.sourceId) {
-      applyInstrument(out.parts[this.partIndex], target);
+      this.change = applyInstrument(out.parts[this.partIndex], target);
       out.subtitle = renameInSubtitle(out.subtitle, this.source(), target);
     }
     if (!partsShareKey(out)) expandMultiRests(out);
@@ -439,6 +441,8 @@ export class App {
       `key ${keyName(initialPartKey(this.instrumentPart()))} → ${keyName(written)}`,
     ];
     if (octaves) bits.push(describeOctaves(octaves, this.fittingOctave()));
+    const bowings = this.change?.droppedBowings ?? 0;
+    if (bowings) bits.push(`${bowings} bow marking${bowings === 1 ? '' : 's'} removed`);
     if (target.transpose.chromatic !== 0) bits.push(`sounds ${describeInterval(target.transpose)}`);
     hint.innerHTML = bits.join(' · ');
     hint.classList.remove('hidden');
@@ -447,11 +451,11 @@ export class App {
   private async update(): Promise<void> {
     if (!this.score) return;
     const token = ++this.renderToken;
-    this.showInstrumentHint();
     const written = transposeKey(initialPartKey(this.instrumentPart()), this.partIv());
     this.setStatus('Rendering…');
     try {
       const score = this.arranged();
+      this.showInstrumentHint();
       const xml = writeMusicXml(score);
       const { pages } = await renderMusicXml(xml, { musicSpacing: this.musicSpacing, musicSize: this.musicSize });
       if (token !== this.renderToken) return;
