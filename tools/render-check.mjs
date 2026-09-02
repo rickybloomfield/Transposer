@@ -7,12 +7,34 @@ import { VerovioToolkit } from 'verovio/esm';
 const args = process.argv.slice(2);
 const files = [];
 for (const a of args) {
-  if (statSync(a).isDirectory()) for (const f of readdirSync(a)) if (f.endsWith('.musicxml')) files.push(join(a, f));
-  else files.push(a);
+  if (statSync(a).isDirectory()) {
+    for (const f of readdirSync(a)) if (f.endsWith('.musicxml')) files.push(join(a, f));
+  } else if (a.endsWith('.musicxml')) {
+    files.push(a);
+  }
 }
 const VerovioModule = await createVerovioModule();
 const tk = new VerovioToolkit(VerovioModule);
-tk.setOptions({ pageWidth: 2159, pageHeight: 2794, scale: 40, breaks: 'auto', header: 'auto', footer: 'auto', svgViewBox: true, adjustPageHeight: false });
+tk.setOptions({
+  pageWidth: 2159,
+  pageHeight: 2794,
+  pageMarginLeft: 110,
+  pageMarginRight: 110,
+  pageMarginTop: 220,
+  pageMarginBottom: 90,
+  scale: 40,
+  breaks: 'auto',
+  header: 'auto',
+  footer: 'none',
+  svgViewBox: true,
+  adjustPageHeight: false,
+  justifyVertically: false,
+  lyricSize: 4.2,
+  spacingSystem: 2,
+  spacingStaff: 9,
+  condense: 'none',
+  font: 'Leipzig',
+});
 for (const f of files) {
   const xml = readFileSync(f, 'utf8');
   const logs = [];

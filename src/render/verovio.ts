@@ -27,7 +27,7 @@ export async function renderMusicXml(xml: string): Promise<RenderResult> {
     pageHeight: 2794,
     pageMarginLeft: 110,
     pageMarginRight: 110,
-    pageMarginTop: 90,
+    pageMarginTop: 220,
     pageMarginBottom: 90,
     scale: 40,
     breaks: 'auto',
@@ -37,7 +37,7 @@ export async function renderMusicXml(xml: string): Promise<RenderResult> {
     adjustPageHeight: false,
     justifyVertically: false,
     lyricSize: 4.2,
-    spacingSystem: 7,
+    spacingSystem: 2,
     spacingStaff: 9,
     condense: 'none',
     font: 'Leipzig',
@@ -46,6 +46,34 @@ export async function renderMusicXml(xml: string): Promise<RenderResult> {
   if (!ok) throw new Error('The music could not be laid out for display.');
   const count = tk.getPageCount();
   const pages: string[] = [];
-  for (let i = 1; i <= count; i++) pages.push(tk.renderToSVG(i));
+  for (let i = 1; i <= count; i++) pages.push(polishRenderedSvg(tk.renderToSVG(i)));
   return { pages };
+}
+
+function polishRenderedSvg(svg: string): string {
+  if (typeof DOMParser === 'undefined' || typeof XMLSerializer === 'undefined') return svg;
+  const doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
+  if (doc.querySelector('parsererror')) return svg;
+  emphasizePageHeader(doc);
+  return new XMLSerializer().serializeToString(doc);
+}
+
+function emphasizePageHeader(doc: XMLDocument): void {
+  const header = doc.querySelector('g.pgHead');
+  if (!header) return;
+
+  const texts = Array.from(header.children).filter((el): el is Element => el.tagName.toLowerCase() === 'text');
+  styleHeaderLine(texts[0], '1100px', '250', true);
+  styleHeaderLine(texts[1], '480px', '900', false);
+}
+
+function styleHeaderLine(text: Element | undefined, fontSize: string, y: string, title: boolean): void {
+  if (!text) return;
+  const rend = text.querySelector('tspan.rend');
+  if (rend) {
+    rend.setAttribute('y', y);
+    rend.setAttribute('font-style', 'italic');
+    if (title) rend.setAttribute('font-weight', 'bold');
+  }
+  for (const leaf of Array.from(text.querySelectorAll('tspan.text > tspan'))) leaf.setAttribute('font-size', fontSize);
 }

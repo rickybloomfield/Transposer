@@ -32,8 +32,8 @@ export function writeMusicXml(score: Score, opts: WriteOptions = {}): string {
   out.push('    <page-layout><page-height>1553</page-height><page-width>1200</page-width>');
   out.push('      <page-margins type="both"><left-margin>70</left-margin><right-margin>70</right-margin><top-margin>70</top-margin><bottom-margin>70</bottom-margin></page-margins></page-layout>');
   out.push('  </defaults>');
-  if (score.title) out.push(`  <credit page="1"><credit-type>title</credit-type><credit-words default-x="600" default-y="1480" justify="center" valign="top" font-size="22">${esc(score.title)}</credit-words></credit>`);
-  if (score.subtitle) out.push(`  <credit page="1"><credit-type>subtitle</credit-type><credit-words default-x="600" default-y="1440" justify="center" valign="top" font-size="14">${esc(score.subtitle)}</credit-words></credit>`);
+  if (score.title) out.push(`  <credit page="1"><credit-type>title</credit-type><credit-words default-x="600" default-y="1480" justify="center" valign="top" font-size="36" font-weight="bold" font-style="italic">${esc(score.title)}</credit-words></credit>`);
+  if (score.subtitle) out.push(`  <credit page="1"><credit-type>subtitle</credit-type><credit-words default-x="600" default-y="1440" justify="center" valign="top" font-size="18" font-style="italic">${esc(score.subtitle)}</credit-words></credit>`);
   if (score.composer) out.push(`  <credit page="1"><credit-type>composer</credit-type><credit-words default-x="1130" default-y="1400" justify="right" valign="bottom" font-size="10">${esc(score.composer)}</credit-words></credit>`);
   if (score.lyricist) out.push(`  <credit page="1"><credit-type>lyricist</credit-type><credit-words default-x="70" default-y="1400" justify="left" valign="bottom" font-size="10">${esc(score.lyricist)}</credit-words></credit>`);
   out.push('  <part-list>');

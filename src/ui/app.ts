@@ -52,6 +52,7 @@ export class App {
             <button class="button" id="pdf">Download PDF</button>
             <button class="button secondary" id="xml">Download MusicXML</button>
             <button class="button secondary" id="print">Print</button>
+            <button class="button secondary" id="clear" type="button">Clear</button>
           </div>
         </div>
         <div class="status" id="status"></div>
@@ -62,7 +63,7 @@ export class App {
         Engraving by <a href="https://www.verovio.org/" target="_blank" rel="noopener">Verovio</a>.
         <a href="https://github.com/rickybloomfield/Transposer" target="_blank" rel="noopener">Source on GitHub</a>.
       </footer>`;
-    for (const id of ['drop', 'file', 'toolbar', 'fileinfo', 'key', 'direction', 'pdf', 'xml', 'print', 'status', 'warnings', 'pages', 'example']) {
+    for (const id of ['drop', 'file', 'toolbar', 'fileinfo', 'key', 'direction', 'pdf', 'xml', 'print', 'clear', 'status', 'warnings', 'pages', 'example']) {
       this.el[id] = this.root.querySelector(`#${id}`) as HTMLElement;
     }
     const drop = this.el.drop;
@@ -80,6 +81,7 @@ export class App {
     this.el.pdf.addEventListener('click', () => void this.downloadPdf());
     this.el.xml.addEventListener('click', () => this.downloadXml());
     this.el.print.addEventListener('click', () => this.print());
+    this.el.clear.addEventListener('click', () => this.clear());
   }
 
   private async openExample(name = 'be-still-my-soul-viola.pc'): Promise<void> {
@@ -96,6 +98,27 @@ export class App {
   private setStatus(text: string, error = false): void {
     this.el.status.textContent = text;
     this.el.status.classList.toggle('error', error);
+  }
+
+  private clear(): void {
+    this.renderToken++;
+    this.score = undefined;
+    this.fileName = '';
+    this.pages = [];
+    this.currentXml = '';
+    this.el.drop.classList.remove('active');
+    (this.el.file as HTMLInputElement).value = '';
+    this.el.toolbar.classList.add('hidden');
+    this.el.fileinfo.textContent = '';
+    this.el.key.innerHTML = '';
+    (this.el.direction as HTMLSelectElement).value = 'auto';
+    const warnings = this.el.warnings as HTMLDetailsElement;
+    warnings.classList.add('hidden');
+    warnings.open = false;
+    warnings.querySelector('summary')!.textContent = '';
+    warnings.querySelector('ul')!.innerHTML = '';
+    this.el.pages.innerHTML = '';
+    this.setStatus('');
   }
 
   private async open(file: File): Promise<void> {
