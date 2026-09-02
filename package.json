@@ -1,0 +1,26 @@
+{
+  "name": "transposer",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Browser-based transposer for Personal Composer (.pc) and Dorico (.dorico) files, with MusicXML export and PDF download.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  },
+  "dependencies": {
+    "jspdf": "^4.2.1",
+    "jszip": "^3.10.1",
+    "svg2pdf.js": "^2.8.1",
+    "verovio": "^6.3.0"
+  }
+}
