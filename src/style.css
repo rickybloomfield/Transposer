@@ -155,3 +155,14 @@ footer.site a { color: var(--accent); }
     gap: .5rem;
   }
 }
+
+.remote-error {
+  margin: 1rem auto 0;
+  max-width: 34rem;
+  padding: .9rem 1.1rem;
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  text-align: left;
+}
+.remote-error p { margin: .4rem 0; }
+.remote-error .remote-error-heading { color: var(--danger); font-weight: 600; }

@@ -1,4 +1,5 @@
 import { loadFile } from '../loaders';
+import { fetchRemoteScore, fileNameOf, RemoteScoreError, scoreUrlCandidates } from '../remote';
 import type { Part, Score } from '../model/types';
 import { keyName, intervalBetweenKeys, simplifyInterval, transposeKey, type Interval } from '../model/pitch';
 import {
@@ -55,8 +56,11 @@ export class App {
 
   constructor(private root: HTMLElement) {
     this.render();
-    const sample = new URLSearchParams(location.search).get('sample');
-    if (sample) void this.openExample(sample);
+    const params = new URLSearchParams(location.search);
+    const linked = params.get('score') ?? params.get('url') ?? params.get('file');
+    const sample = params.get('sample');
+    if (linked) void this.openUrl(linked);
+    else if (sample) void this.openExample(sample);
   }
 
   private render(): void {
@@ -72,6 +76,7 @@ export class App {
           <p class="primary">Drop a <strong>.pc</strong> or <strong>.dorico</strong> file here, or</p>
           <p><label class="button">Choose a file<input type="file" id="file" accept=".pc,.dorico" hidden></label></p>
           <p><button class="button secondary" id="example" type="button">Try an example file</button></p>
+          <div class="remote-error hidden" id="remote-error"></div>
         </div>
         <div class="toolbar hidden" id="toolbar">
           <div class="fileinfo" id="fileinfo"></div>
@@ -140,7 +145,8 @@ export class App {
       </footer>`;
     const ids = ['drop', 'file', 'toolbar', 'fileinfo', 'part-field', 'part', 'instrument-from', 'instrument-to',
       'key', 'direction', 'octave', 'instrument-hint', 'spacing-down', 'spacing-value', 'spacing-up',
-      'size-down', 'size-value', 'size-up', 'pdf', 'xml', 'print', 'clear', 'status', 'warnings', 'pages', 'example'];
+      'size-down', 'size-value', 'size-up', 'pdf', 'xml', 'print', 'clear', 'status', 'warnings', 'pages', 'example',
+      'remote-error'];
     for (const id of ids) this.el[id] = this.root.querySelector(`#${id}`) as HTMLElement;
     fillInstrumentSelect(this.el['instrument-from'] as HTMLSelectElement);
     fillInstrumentSelect(this.el['instrument-to'] as HTMLSelectElement);
@@ -176,6 +182,64 @@ export class App {
     this.el.clear.addEventListener('click', () => this.clear());
   }
 
+  /**
+   * Open the score named by `?score=`. The value is usually the PDF a visitor was reading, so
+   * `scoreUrlCandidates` looks for the `.pc` or `.dorico` published beside it.
+   */
+  private async openUrl(input: string): Promise<void> {
+    this.hideRemoteError();
+    let candidates: string[];
+    try {
+      candidates = scoreUrlCandidates(input);
+    } catch (e) {
+      this.showRemoteError(e, input);
+      return;
+    }
+    this.setStatus(`Loading ${fileNameOf(candidates[0])}…`);
+    try {
+      const { file } = await fetchRemoteScore(candidates);
+      await this.open(file);
+    } catch (e) {
+      console.error(e);
+      this.showRemoteError(e, input);
+    }
+  }
+
+  /** Explain a failed `?score=` load and, when we know which file to look for, offer it directly. */
+  private showRemoteError(error: unknown, input: string): void {
+    const remote = error instanceof RemoteScoreError ? error : undefined;
+    const kind = remote?.kind ?? 'blocked';
+    const candidates = remote?.candidates ?? [];
+    const host = hostOf(candidates[0] ?? input);
+    const heading = kind === 'invalid'
+      ? 'That link is not a score address.'
+      : `Could not load the linked score${host ? ` from ${host}` : ''}.`;
+    const panel = this.el['remote-error'];
+    panel.innerHTML = `<p class="remote-error-heading">${escapeHtml(heading)}</p><p>${escapeHtml((error as Error).message)}</p>`;
+    if (kind === 'blocked' && candidates.length) {
+      const link = document.createElement('a');
+      link.className = 'button secondary';
+      link.href = candidates[0];              // Validated as http(s) by scoreUrlCandidates.
+      link.rel = 'noopener';
+      link.textContent = `Download ${fileNameOf(candidates[0])}`;
+      const p = document.createElement('p');
+      p.append(link, document.createTextNode(' then drop it on this page.'));
+      panel.appendChild(p);
+      console.info(
+        `Transposer: ${host} did not send an Access-Control-Allow-Origin header, so the browser ` +
+        'blocked the request. The site owner can allow it by serving score files with ' +
+        '`Access-Control-Allow-Origin: *`.',
+      );
+    }
+    panel.classList.remove('hidden');
+    this.setStatus('');
+  }
+
+  private hideRemoteError(): void {
+    this.el['remote-error'].classList.add('hidden');
+    this.el['remote-error'].innerHTML = '';
+  }
+
   private async openExample(name = 'be-still-my-soul-viola.pc'): Promise<void> {
     try {
       const res = await fetch(`${import.meta.env.BASE_URL}samples/${name}`);
@@ -205,6 +269,7 @@ export class App {
     this.sourceId = CONCERT_PITCH.id;
     this.targetId = CONCERT_PITCH.id;
     this.el.drop.classList.remove('active');
+    this.hideRemoteError();
     (this.el.file as HTMLInputElement).value = '';
     this.el.toolbar.classList.add('hidden');
     this.el.fileinfo.textContent = '';
@@ -228,6 +293,7 @@ export class App {
   }
 
   private async open(file: File): Promise<void> {
+    this.hideRemoteError();
     this.setStatus(`Reading ${file.name}…`);
     try {
       const { score } = await loadFile(file);
@@ -559,6 +625,15 @@ function renameInSubtitle(subtitle: string | undefined, source: Instrument, targ
   // The match came from normalized text, so it may not appear verbatim in the original.
   const re = new RegExp(found.matched.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '[\\s-]+'), 'i');
   return re.test(subtitle) ? subtitle.replace(re, target.name) : subtitle;
+}
+
+/** The host a failed link pointed at, for the error heading. */
+function hostOf(url: string): string {
+  try {
+    return new URL(url).host;
+  } catch {
+    return '';
+  }
 }
 
 function escapeHtml(s: string): string {

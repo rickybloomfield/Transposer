@@ -16,6 +16,37 @@ your browser.
 The MusicXML file can be opened in MuseScore, Dorico, Finale, Sibelius and most other notation
 programs if you want to edit the music further.
 
+## Linking to a song
+
+A `?score=` parameter opens a web-hosted file straight away, so a song's download page can link
+visitors to it already loaded:
+
+```
+https://rickybloomfield.github.io/Transposer/?score=https://defordmusic.com/wp-content/uploads/1b-solo-be-still-my-soul-viola.pdf
+```
+
+The parameter takes the URL of the **PDF**, the `.pc` or the `.dorico`. Given a PDF — usually the
+link the visitor was already looking at — the app cannot read it (there is no music recognition
+here) and instead looks for the `.pc`, then the `.dorico`, published beside it under the same name.
+Any query string is kept, so a `?ver=` cache-buster survives the swap. `?url=` and `?file=` are
+accepted as aliases.
+
+The address must be `https`, and the file has to be readable across origins:
+
+> **Site owners:** browsers refuse to let one site read another's files unless the response carries
+> an `Access-Control-Allow-Origin` header. Serve the score files with `Access-Control-Allow-Origin: *`
+> — on Apache, in an `.htaccess` next to them:
+>
+> ```apache
+> <FilesMatch "\.(pc|dorico)$">
+>   Header set Access-Control-Allow-Origin "*"
+> </FilesMatch>
+> ```
+
+Without that header the link still works, just not in one step: the app explains what happened and
+offers the file for download, and the visitor drops it on the page. Nothing is proxied through a
+third party either way, so a linked score is still parsed only in the visitor's browser.
+
 ## Transposing for another instrument
 
 **Written for** and **Transpose for** re-notate a part for a different instrument. Say the file is a
