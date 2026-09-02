@@ -7,6 +7,7 @@
   --accent-ink: #ffffff;
   --border: #d9d4c7;
   --danger: #a8322a;
+  --control-height: 2.35rem;
   font-family: "Georgia", "Times New Roman", serif;
   color: var(--ink);
   background: var(--bg);
@@ -56,9 +57,55 @@ main { padding: 1.25rem 1.5rem 3rem; max-width: 1200px; margin: 0 auto; }
   border-radius: 12px;
 }
 .toolbar label { display: flex; flex-direction: column; gap: .3rem; font-size: .9rem; color: var(--muted); }
-.toolbar select { padding: .45rem .6rem; border-radius: 8px; border: 1px solid var(--border); background: #fff; min-width: 15rem; }
+.toolbar select {
+  height: var(--control-height);
+  padding: 0 .6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  min-width: 15rem;
+}
 .toolbar .spacer { flex: 1; }
 .toolbar .actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+.layout-controls {
+  display: flex;
+  gap: .75rem;
+  align-items: end;
+  flex-wrap: nowrap;
+}
+.layout-controls label { flex: 0 0 auto; }
+.stepper {
+  display: grid;
+  grid-template-columns: var(--control-height) 3.85rem var(--control-height);
+  align-items: center;
+  height: var(--control-height);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.stepper output {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.icon-button {
+  width: var(--control-height);
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: #fff;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+.icon-button:hover:not(:disabled) { background: #fbf7f1; }
+.icon-button:disabled { color: var(--muted); opacity: .45; cursor: default; }
 .fileinfo { font-size: .95rem; }
 .fileinfo strong { display: inline-block; margin-bottom: .12rem; font-size: 1.15rem; font-weight: 700; }
 .status { color: var(--muted); font-size: .9rem; min-height: 1.2rem; }
@@ -79,5 +126,9 @@ footer.site a { color: var(--accent); }
 .hidden { display: none !important; }
 @media (max-width: 640px) {
   header.site, main { padding-left: 1rem; padding-right: 1rem; }
+  .toolbar { padding: .875rem; }
   .toolbar select { min-width: 100%; }
+  .layout-controls {
+    gap: .5rem;
+  }
 }

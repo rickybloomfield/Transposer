@@ -3,10 +3,20 @@ import type { Score } from '../model/types';
 import { keyName, intervalBetweenKeys, simplifyInterval, transposeKey, type Interval } from '../model/pitch';
 import { initialKey, transposeScore } from '../model/transpose';
 import { writeMusicXml } from '../musicxml/writeMusicXml';
-import { renderMusicXml } from '../render/verovio';
+import {
+  DEFAULT_MUSIC_SIZE,
+  DEFAULT_MUSIC_SPACING,
+  MAX_MUSIC_SIZE,
+  MAX_MUSIC_SPACING,
+  MIN_MUSIC_SIZE,
+  MIN_MUSIC_SPACING,
+  renderMusicXml,
+} from '../render/verovio';
 import { downloadBlob, svgPagesToPdf } from '../render/pdf';
 
 const MAJOR_KEYS = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
+const MUSIC_SIZE_STEP = 5;
+const MUSIC_SPACING_STEP = 5;
 
 export class App {
   private score?: Score;
@@ -15,6 +25,8 @@ export class App {
   private currentXml = '';
   private el: Record<string, HTMLElement> = {};
   private renderToken = 0;
+  private musicSpacing = DEFAULT_MUSIC_SPACING;
+  private musicSize = DEFAULT_MUSIC_SIZE;
 
   constructor(private root: HTMLElement) {
     this.render();
@@ -47,6 +59,22 @@ export class App {
               <option value="down">Down</option>
             </select>
           </label>
+          <div class="layout-controls">
+            <label>Music spacing
+              <div class="stepper" role="group" aria-label="Music spacing">
+                <button class="icon-button" id="spacing-down" type="button" aria-label="Decrease music spacing">-</button>
+                <output id="spacing-value" aria-live="polite">${DEFAULT_MUSIC_SPACING}%</output>
+                <button class="icon-button" id="spacing-up" type="button" aria-label="Increase music spacing">+</button>
+              </div>
+            </label>
+            <label>Music size
+              <div class="stepper" role="group" aria-label="Music size">
+                <button class="icon-button" id="size-down" type="button" aria-label="Make notes and staves smaller">-</button>
+                <output id="size-value" aria-live="polite">${DEFAULT_MUSIC_SIZE}%</output>
+                <button class="icon-button" id="size-up" type="button" aria-label="Make notes and staves larger">+</button>
+              </div>
+            </label>
+          </div>
           <div class="spacer"></div>
           <div class="actions">
             <button class="button" id="pdf">Download PDF</button>
@@ -63,7 +91,7 @@ export class App {
         Engraving by <a href="https://www.verovio.org/" target="_blank" rel="noopener">Verovio</a>.
         <a href="https://github.com/rickybloomfield/Transposer" target="_blank" rel="noopener">Source on GitHub</a>.
       </footer>`;
-    for (const id of ['drop', 'file', 'toolbar', 'fileinfo', 'key', 'direction', 'pdf', 'xml', 'print', 'clear', 'status', 'warnings', 'pages', 'example']) {
+    for (const id of ['drop', 'file', 'toolbar', 'fileinfo', 'key', 'direction', 'spacing-down', 'spacing-value', 'spacing-up', 'size-down', 'size-value', 'size-up', 'pdf', 'xml', 'print', 'clear', 'status', 'warnings', 'pages', 'example']) {
       this.el[id] = this.root.querySelector(`#${id}`) as HTMLElement;
     }
     const drop = this.el.drop;
@@ -78,6 +106,10 @@ export class App {
     this.el.example.addEventListener('click', () => void this.openExample());
     this.el.key.addEventListener('change', () => void this.update());
     this.el.direction.addEventListener('change', () => void this.update());
+    this.el['spacing-down'].addEventListener('click', () => this.setMusicSpacing(this.musicSpacing - MUSIC_SPACING_STEP));
+    this.el['spacing-up'].addEventListener('click', () => this.setMusicSpacing(this.musicSpacing + MUSIC_SPACING_STEP));
+    this.el['size-down'].addEventListener('click', () => this.setMusicSize(this.musicSize - MUSIC_SIZE_STEP));
+    this.el['size-up'].addEventListener('click', () => this.setMusicSize(this.musicSize + MUSIC_SIZE_STEP));
     this.el.pdf.addEventListener('click', () => void this.downloadPdf());
     this.el.xml.addEventListener('click', () => this.downloadXml());
     this.el.print.addEventListener('click', () => this.print());
@@ -106,12 +138,16 @@ export class App {
     this.fileName = '';
     this.pages = [];
     this.currentXml = '';
+    this.musicSpacing = DEFAULT_MUSIC_SPACING;
+    this.musicSize = DEFAULT_MUSIC_SIZE;
     this.el.drop.classList.remove('active');
     (this.el.file as HTMLInputElement).value = '';
     this.el.toolbar.classList.add('hidden');
     this.el.fileinfo.textContent = '';
     this.el.key.innerHTML = '';
     (this.el.direction as HTMLSelectElement).value = 'auto';
+    this.syncMusicSpacingControls();
+    this.syncMusicSizeControls();
     const warnings = this.el.warnings as HTMLDetailsElement;
     warnings.classList.add('hidden');
     warnings.open = false;
@@ -128,6 +164,8 @@ export class App {
       this.score = score;
       this.fileName = file.name.replace(/\.[^.]+$/, '');
       this.populateKeys();
+      this.syncMusicSpacingControls();
+      this.syncMusicSizeControls();
       this.showWarnings(score.warnings);
       const parts = score.parts.map((p) => p.name).join(', ');
       this.el.fileinfo.innerHTML = `<strong>${escapeHtml(score.title ?? file.name)}</strong>${score.subtitle ? ` — ${escapeHtml(score.subtitle)}` : ''}<br><span>${escapeHtml(parts)} · ${score.parts[0]?.measures.length ?? 0} measures · original key ${keyName(initialKey(score))}</span>`;
@@ -176,6 +214,34 @@ export class App {
     return transposeScore(this.score!, this.currentInterval());
   }
 
+  private setMusicSpacing(next: number): void {
+    const clamped = Math.min(MAX_MUSIC_SPACING, Math.max(MIN_MUSIC_SPACING, next));
+    if (clamped === this.musicSpacing) return;
+    this.musicSpacing = clamped;
+    this.syncMusicSpacingControls();
+    if (this.score) void this.update();
+  }
+
+  private syncMusicSpacingControls(): void {
+    this.el['spacing-value'].textContent = `${this.musicSpacing}%`;
+    (this.el['spacing-down'] as HTMLButtonElement).disabled = this.musicSpacing <= MIN_MUSIC_SPACING;
+    (this.el['spacing-up'] as HTMLButtonElement).disabled = this.musicSpacing >= MAX_MUSIC_SPACING;
+  }
+
+  private setMusicSize(next: number): void {
+    const clamped = Math.min(MAX_MUSIC_SIZE, Math.max(MIN_MUSIC_SIZE, next));
+    if (clamped === this.musicSize) return;
+    this.musicSize = clamped;
+    this.syncMusicSizeControls();
+    if (this.score) void this.update();
+  }
+
+  private syncMusicSizeControls(): void {
+    this.el['size-value'].textContent = `${this.musicSize}%`;
+    (this.el['size-down'] as HTMLButtonElement).disabled = this.musicSize <= MIN_MUSIC_SIZE;
+    (this.el['size-up'] as HTMLButtonElement).disabled = this.musicSize >= MAX_MUSIC_SIZE;
+  }
+
   private async update(): Promise<void> {
     if (!this.score) return;
     const token = ++this.renderToken;
@@ -185,7 +251,7 @@ export class App {
     try {
       const score = this.transposed();
       const xml = writeMusicXml(score);
-      const { pages } = await renderMusicXml(xml);
+      const { pages } = await renderMusicXml(xml, { musicSpacing: this.musicSpacing, musicSize: this.musicSize });
       if (token !== this.renderToken) return;
       this.currentXml = xml;
       this.pages = pages;

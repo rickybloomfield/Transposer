@@ -17,10 +17,36 @@ export function getVerovio(): Promise<VerovioToolkit> {
   return toolkitPromise;
 }
 
+export interface RenderOptions {
+  /** 100 is the default horizontal density. Lower fits more measures, higher fits fewer. */
+  musicSpacing?: number;
+  /** 100 is the default staff and note size. */
+  musicSize?: number;
+}
+
 export interface RenderResult { pages: string[] }
 
+export const DEFAULT_MUSIC_SIZE = 100;
+export const DEFAULT_MUSIC_SPACING = 100;
+export const MIN_MUSIC_SIZE = 70;
+export const MAX_MUSIC_SIZE = 130;
+export const MIN_MUSIC_SPACING = 70;
+export const MAX_MUSIC_SPACING = 130;
+const DEFAULT_SPACING_LINEAR = 0.24;
+const DEFAULT_UNIT = 9;
+
+export function musicSpacingToSpacingLinear(musicSpacing = DEFAULT_MUSIC_SPACING): number {
+  const clamped = Math.min(MAX_MUSIC_SPACING, Math.max(MIN_MUSIC_SPACING, musicSpacing));
+  return Number((DEFAULT_SPACING_LINEAR * (clamped / DEFAULT_MUSIC_SPACING)).toFixed(3));
+}
+
+export function musicSizeToUnit(musicSize = DEFAULT_MUSIC_SIZE): number {
+  const clamped = Math.min(MAX_MUSIC_SIZE, Math.max(MIN_MUSIC_SIZE, musicSize));
+  return Number((DEFAULT_UNIT * (clamped / DEFAULT_MUSIC_SIZE)).toFixed(2));
+}
+
 /** Render MusicXML to one SVG string per US-letter page. */
-export async function renderMusicXml(xml: string): Promise<RenderResult> {
+export async function renderMusicXml(xml: string, opts: RenderOptions = {}): Promise<RenderResult> {
   const tk = await getVerovio();
   tk.setOptions({
     pageWidth: 2159,
@@ -30,6 +56,7 @@ export async function renderMusicXml(xml: string): Promise<RenderResult> {
     pageMarginTop: 220,
     pageMarginBottom: 90,
     scale: 40,
+    unit: musicSizeToUnit(opts.musicSize),
     breaks: 'auto',
     header: 'auto',
     footer: 'none',
@@ -37,6 +64,7 @@ export async function renderMusicXml(xml: string): Promise<RenderResult> {
     adjustPageHeight: false,
     justifyVertically: false,
     lyricSize: 4.2,
+    spacingLinear: musicSpacingToSpacingLinear(opts.musicSpacing),
     spacingSystem: 2,
     spacingStaff: 9,
     condense: 'none',
