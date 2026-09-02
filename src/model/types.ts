@@ -44,8 +44,12 @@ export interface Lyric {
   verse: number;
   text: string;
   syllabic: 'single' | 'begin' | 'middle' | 'end';
-  /** Melisma extender line after this syllable */
-  extend?: boolean;
+  /**
+   * Melisma extender line. Parsers mark every note the extender covers with 'start';
+   * `finalizeLyrics` resolves that into the syllable the line begins under ('start') and the
+   * last note it reaches ('stop'), which carries no syllable of its own.
+   */
+  extend?: 'start' | 'stop';
 }
 
 export type Articulation =

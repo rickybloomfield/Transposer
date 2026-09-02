@@ -334,6 +334,19 @@ function decodeAccidental(a: number, b: number): RawNote['accidental'] {
   return undefined;
 }
 
+/**
+ * A heading kept in the music rather than in the PAGE block. Some files carry no PAGE text at
+ * all, and put the title and subtitle on the first system instead.
+ */
+interface HeadingText { text: string; size: number }
+
+/**
+ * Headings sit far above the first system, while a direction hugs its staff. In the sample files
+ * the headings land between y -1126 and -2207 and the directions between -959 and +363, so this
+ * threshold separates them with room to spare either way.
+ */
+const HEADING_Y = -1200;
+
 function parsePageTexts(r: Reader, pageAt: number): PageText[] {
   const texts: PageText[] = [];
   const end = Math.min(r.length, r.find('QFEX', pageAt) >= 0 ? r.find('QFEX', pageAt) : r.length);
@@ -376,6 +389,7 @@ function buildScore(blocks: RawBlock[], stik: StikRecord[], staffCount: number, 
   }
 
   const meta = extractMetadata(pageTexts);
+  const headings: HeadingText[] = [];
   const groups = groupStaves(staffInfos, meta.subtitle);
   const score: Score = {
     title: meta.title, subtitle: meta.subtitle, composer: meta.composer, lyricist: meta.lyricist,
@@ -386,6 +400,8 @@ function buildScore(blocks: RawBlock[], stik: StikRecord[], staffCount: number, 
     const grp = groups[g];
     const part: Part = { id: `P${g + 1}`, name: grp.name, staffCount: grp.staves.length, measures: [], grandStaff: grp.staves.length > 1 };
     const ctx = new PartContext(grp.staves.length);
+    ctx.headings = headings;
+    ctx.captureHeadings = !meta.title;
     for (const t of [meta.title, meta.subtitle]) if (t) ctx.titleTexts.add(t.toLowerCase());
     let displayNumber = firstMeasureNumber(stik);
     for (let m = 0; m < measureCount; m++) {
@@ -407,6 +423,7 @@ function buildScore(blocks: RawBlock[], stik: StikRecord[], staffCount: number, 
     score.parts.push(part);
     applyCredits(score, ctx.credits);
   }
+  applyHeadings(score, headings);
   return score;
 }
 
@@ -440,6 +457,21 @@ function groupStaves(infos: StaffInfo[], subtitle?: string): StaffGroup[] {
     groups.push({ name, staves: [s] });
   }
   return groups;
+}
+
+/**
+ * Fill in a title and subtitle the PAGE block did not carry, from the headings found on the first
+ * system. The largest is the title, the next size down the subtitle, matching how these files lay
+ * a heading out.
+ */
+function applyHeadings(score: Score, headings: HeadingText[]): void {
+  const seen = new Set<string>();
+  const uniq = headings
+    .filter((h) => (seen.has(h.text) ? false : (seen.add(h.text), true)))
+    .sort((a, b) => b.size - a.size)
+    .filter((h) => h.text !== score.title && h.text !== score.subtitle);
+  if (!score.title && uniq.length) score.title = uniq.shift()!.text;
+  if (!score.subtitle && uniq.length) score.subtitle = uniq[0].text;
 }
 
 function applyCredits(score: Score, credits: string[]): void {
@@ -493,6 +525,10 @@ class PartContext {
   credits: string[] = [];
   /** Title/subtitle strings, so duplicates placed in the music are not shown twice */
   titleTexts = new Set<string>();
+  /** Headings found in the music; shared across the parts, which all see the same first system */
+  headings: HeadingText[] = [];
+  /** Whether text above the system counts as a heading — only where the PAGE block had none */
+  captureHeadings = false;
   lastKey: number | undefined;
   lastTime: string | undefined;
   pendingForwardRepeat = false;
@@ -706,7 +742,7 @@ function addLyric(ev: NoteEvent, raw: string): void {
   text = text.trim();
   ev.lyrics = ev.lyrics ?? [];
   const verse = ev.lyrics.length + 1;
-  const lyric: Lyric = { verse, text, syllabic: hyphen ? 'begin' : 'single', extend: extend || undefined };
+  const lyric: Lyric = { verse, text, syllabic: hyphen ? 'begin' : 'single', extend: extend ? 'start' : undefined };
   (lyric as Lyric & { hyphenAfter?: boolean }).hyphenAfter = hyphen;
   ev.lyrics.push(lyric);
 }
@@ -756,7 +792,15 @@ function applyMeasureItem(item: RawItem, sm: StaffMeasure, staffIndex: number, l
         const credit = text.match(/^(Words|Lyrics|Text|Music|Composer|Melody|Tune|Arrangement|Arranged by|Arr\.?|Translation|Translated by|Copyright|©)\b/i);
         if (credit) { ctx.credits.push(text); break; }
         const size = new DataView(item.payload.buffer, item.payload.byteOffset).getUint16(8, true);
-        if (size >= 0x200 || ctx.titleTexts.has(text.toLowerCase())) { ctx.titleTexts.add(text.toLowerCase()); break; }
+        // Title-sized text is always a heading. Text that merely sits above the system is only
+        // read as one in files whose PAGE block had no headings, which keep them here instead;
+        // elsewhere that would swallow directions such as the "about" of a tempo mark.
+        if (size >= 0x200 || (ctx.captureHeadings && item.y <= HEADING_Y)) {
+          if (!ctx.titleTexts.has(text.toLowerCase())) ctx.headings.push({ text, size });
+          ctx.titleTexts.add(text.toLowerCase());
+          break;
+        }
+        if (ctx.titleTexts.has(text.toLowerCase())) break;
         const style = item.font === 0x1d ? 'bold-italic' : 'italic';
         sm.directions.push({ start: 0, placement: place, words: text, style, staff: staffIndex + 1, sign });
       } else if (sign) {

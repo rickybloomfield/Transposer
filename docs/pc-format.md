@@ -10,7 +10,7 @@ offset 0x1b). All integers are little-endian. Offsets in note records are zero-b
 | Header | `PersonalComposerForWindows\0`, format byte at 0x1b, default settings, font names, one 40-byte record per staff (MIDI channel at +6, program at +7, transposition in semitones at +4). |
 | `STIK` | u32 count (unreliable), then one record per displayed measure. |
 | `MUSE` | One block per (staff, measure) in staff-major order: all measures of staff 1, then staff 2, ... |
-| `PAGE` | Page setup and free page texts (title, subtitle, credits, running header with `%page`). |
+| `PAGE` | Page setup and, in most files, the free page texts (title, subtitle, credits, running header with `%page`). Some files leave this empty and keep the headings in the music instead — see [Headings](#headings). |
 | `QFEX`, `UCHD`, `UIDS`, `VLOC`, `DYNA` | Trailing tables (dynamics table maps glyphs to velocity offsets). Bitmaps, if any, are embedded here. |
 
 ## STIK measure records (28 bytes + 8 × extras)
@@ -33,6 +33,30 @@ eighth, 0x08 16th), u8 zero.
 Then `u16 nItems` followed by the items, then two voices, each with four lists:
 `u16 n` notes (28 bytes each), `u16 n` rests (10 bytes each), `u16 n` second-layer notes,
 `u16 n` second-layer rests.
+
+### Headings
+
+Not every file puts its title in the `PAGE` block. `3b-satb-be-still-my-soul-vocal-parts.pc` has
+no page texts at all and carries the title, subtitle and credits as ordinary 0x12 text items in
+the first system's measures, mixed in with directions that really do belong to a staff.
+
+The `y` of the text header separates them: a heading floats far above the system, a direction sits
+next to its staff. Measured across the sample files:
+
+| Text | Size | y | Kind |
+| --- | --- | --- | --- |
+| `Be Still, My Soul` | 0x320 | -2207 | title |
+| `SATB (voice parts only)` | 0x14a | -1845 | subtitle |
+| `Arrangement: Sally DeFord` | 0x140 | -1126 | credit (also matched by its `Label:` prefix) |
+| `(sop. div.)` | 0x14a | -959 | direction |
+| `Soprano/Alto unis.` | 0x14a | -939 | direction |
+| `a tempo` | 0x168 | -737 | direction |
+| `Tenor/Bass unis.` | 0x14a | +318 | direction |
+
+Size alone will not do it: a subtitle and a direction can both be 0x14a. The parser treats text as
+a heading when its size is at least 0x200 (title-sized) or its `y` is -1200 or less, which is
+further above the staff than any direction in the samples. Where the page block left them empty,
+the largest heading becomes the title and the next size down the subtitle.
 
 ### Items and note sub-records
 

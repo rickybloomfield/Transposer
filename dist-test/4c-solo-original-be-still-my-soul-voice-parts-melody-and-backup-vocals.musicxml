@@ -57,7 +57,7 @@
     </measure>
     <measure number="8">
       <note><pitch><step>G</step><octave>4</octave></pitch><duration>768</duration><voice>1</voice><type>quarter</type><lyric number="1"><syllabic>single</syllabic><text>side;</text><extend type="start"/></lyric></note>
-      <note><pitch><step>A</step><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/></note>
+      <note><pitch><step>A</step><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="9">
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
@@ -67,7 +67,7 @@
     </measure>
     <measure number="10">
       <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>2304</duration><tie type="start"/><voice>1</voice><type>half</type><dot/><notations><tied type="start"/></notations><lyric number="1"><syllabic>single</syllabic><text>bear</text><extend type="start"/></lyric></note>
-      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>384</duration><tie type="stop"/><voice>1</voice><type>eighth</type><beam number="1">begin</beam><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>384</duration><tie type="stop"/><voice>1</voice><type>eighth</type><beam number="1">begin</beam><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
       <note><pitch><step>A</step><octave>4</octave></pitch><duration>384</duration><voice>1</voice><type>eighth</type><beam number="1">end</beam><lyric number="1"><syllabic>single</syllabic><text>thy</text></lyric></note>
     </measure>
     <measure number="11">
@@ -87,7 +87,7 @@
     </measure>
     <measure number="14">
       <note><pitch><step>D</step><octave>5</octave></pitch><duration>2304</duration><tie type="start"/><voice>1</voice><type>half</type><dot/><notations><tied type="start"/></notations><lyric number="1"><syllabic>single</syllabic><text>God</text><extend type="start"/></lyric></note>
-      <note><pitch><step>D</step><octave>5</octave></pitch><duration>384</duration><tie type="stop"/><voice>1</voice><type>eighth</type><beam number="1">begin</beam><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>D</step><octave>5</octave></pitch><duration>384</duration><tie type="stop"/><voice>1</voice><type>eighth</type><beam number="1">begin</beam><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
       <note><pitch><step>A</step><octave>4</octave></pitch><duration>384</duration><voice>1</voice><type>eighth</type><beam number="1">end</beam><lyric number="1"><syllabic>single</syllabic><text>to</text></lyric></note>
     </measure>
     <measure number="15">
@@ -98,7 +98,7 @@
     </measure>
     <measure number="16">
       <note><pitch><step>G</step><octave>4</octave></pitch><duration>768</duration><voice>1</voice><type>quarter</type><lyric number="1"><syllabic>end</syllabic><text>vide;</text><extend type="start"/></lyric></note>
-      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/></note>
+      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="17">
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
@@ -120,7 +120,7 @@
       <note><pitch><step>A</step><octave>4</octave></pitch><duration>3072</duration><tie type="start"/><voice>1</voice><type>whole</type><notations><tied type="start"/></notations><lyric number="1"><syllabic>end</syllabic><text>main.</text><extend type="start"/></lyric></note>
     </measure>
     <measure number="21">
-      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1536</duration><tie type="stop"/><voice>1</voice><type>half</type><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1536</duration><tie type="stop"/><voice>1</voice><type>half</type><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
       <note><rest/><duration>1536</duration><voice>1</voice><type>half</type></note>
     </measure>
     <measure number="22">
@@ -145,7 +145,7 @@
     <measure number="25">
       <note><pitch><step>G</step><octave>4</octave></pitch><duration>384</duration><voice>1</voice><type>eighth</type><beam number="1">begin</beam><lyric number="1"><syllabic>single</syllabic><text>Friend</text><extend type="start"/></lyric></note>
       <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>384</duration><tie type="start"/><voice>1</voice><type>eighth</type><beam number="1">end</beam><notations><tied type="start"/></notations></note>
-      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>2304</duration><tie type="stop"/><voice>1</voice><type>half</type><dot/><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>2304</duration><tie type="stop"/><voice>1</voice><type>half</type><dot/><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="26">
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
@@ -169,7 +169,7 @@
       <note><pitch><step>F</step><octave>4</octave></pitch><duration>3072</duration><tie type="start"/><voice>1</voice><type>whole</type><notations><tied type="start"/></notations><lyric number="1"><syllabic>single</syllabic><text>end.</text><extend type="start"/></lyric></note>
     </measure>
     <measure number="30">
-      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1536</duration><tie type="stop"/><voice>1</voice><type>half</type><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1536</duration><tie type="stop"/><voice>1</voice><type>half</type><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
       <note><rest/><duration>1536</duration><voice>1</voice><type>half</type></note>
     </measure>
     <measure number="31">
@@ -201,7 +201,7 @@
     </measure>
     <measure number="36">
       <note><pitch><step>G</step><octave>4</octave></pitch><duration>768</duration><voice>1</voice><type>quarter</type><lyric number="1"><syllabic>single</syllabic><text>take</text><extend type="start"/></lyric></note>
-      <note><pitch><step>A</step><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/></note>
+      <note><pitch><step>A</step><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="37">
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
@@ -244,7 +244,7 @@
     </measure>
     <measure number="44">
       <note><pitch><step>G</step><octave>4</octave></pitch><duration>768</duration><voice>1</voice><type>quarter</type><lyric number="1"><syllabic>single</syllabic><text>shake,</text><extend type="start"/></lyric></note>
-      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/></note>
+      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="45">
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
@@ -268,7 +268,7 @@
       <direction placement="below"><direction-type><wedge type="stop" number="4"/></direction-type></direction>
     </measure>
     <measure number="49">
-      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1536</duration><tie type="stop"/><voice>1</voice><type>half</type><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1536</duration><tie type="stop"/><voice>1</voice><type>half</type><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
       <note><rest/><duration>1536</duration><voice>1</voice><type>half</type></note>
     </measure>
     <measure number="50">
@@ -292,7 +292,7 @@
     <measure number="53">
       <note><pitch><step>G</step><octave>4</octave></pitch><duration>384</duration><voice>1</voice><type>eighth</type><beam number="1">begin</beam><lyric number="1"><syllabic>single</syllabic><text>know</text><extend type="start"/></lyric></note>
       <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>384</duration><tie type="start"/><voice>1</voice><type>eighth</type><beam number="1">end</beam><notations><tied type="start"/></notations></note>
-      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>2304</duration><tie type="stop"/><voice>1</voice><type>half</type><dot/><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>2304</duration><tie type="stop"/><voice>1</voice><type>half</type><dot/><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="54">
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
@@ -314,7 +314,7 @@
       <note><pitch><step>F</step><octave>4</octave></pitch><duration>3072</duration><voice>1</voice><type>whole</type><lyric number="1"><syllabic>end</syllabic><text>low.</text><extend type="start"/></lyric></note>
     </measure>
     <measure number="58">
-      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1536</duration><voice>1</voice><type>half</type></note>
+      <note><pitch><step>F</step><octave>4</octave></pitch><duration>1536</duration><voice>1</voice><type>half</type><lyric number="1"><extend type="stop"/></lyric></note>
       <note><rest/><duration>1536</duration><voice>1</voice><type>half</type></note>
     </measure>
     <measure number="59">
@@ -372,7 +372,7 @@
     </measure>
     <measure number="71">
       <note><pitch><step>A</step><octave>4</octave></pitch><duration>768</duration><voice>1</voice><type>quarter</type><lyric number="1"><syllabic>single</syllabic><text>on,</text><extend type="start"/></lyric></note>
-      <note><pitch><step>B</step><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/></note>
+      <note><pitch><step>B</step><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="72">
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
@@ -382,7 +382,7 @@
     </measure>
     <measure number="73">
       <note><pitch><step>C</step><octave>5</octave></pitch><duration>2304</duration><tie type="start"/><voice>1</voice><type>half</type><dot/><notations><tied type="start"/></notations><lyric number="1"><syllabic>single</syllabic><text>be</text><extend type="start"/></lyric></note>
-      <note><pitch><step>C</step><octave>5</octave></pitch><duration>384</duration><tie type="stop"/><voice>1</voice><type>eighth</type><beam number="1">begin</beam><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>C</step><octave>5</octave></pitch><duration>384</duration><tie type="stop"/><voice>1</voice><type>eighth</type><beam number="1">begin</beam><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
       <note><pitch><step>B</step><octave>4</octave></pitch><duration>384</duration><voice>1</voice><type>eighth</type><beam number="1">end</beam><lyric number="1"><syllabic>begin</syllabic><text>for</text></lyric></note>
     </measure>
     <measure number="74">
@@ -415,7 +415,7 @@
     </measure>
     <measure number="79">
       <note><pitch><step>A</step><octave>4</octave></pitch><duration>768</duration><voice>1</voice><type>quarter</type><lyric number="1"><syllabic>single</syllabic><text>gone,</text><extend type="start"/></lyric></note>
-      <note><pitch><step>C</step><octave>5</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/></note>
+      <note><pitch><step>C</step><octave>5</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="80">
       <direction placement="below"><direction-type><dynamics><mf/></dynamics></direction-type><sound dynamics="78"/></direction>
@@ -440,7 +440,7 @@
       <direction placement="below"><direction-type><wedge type="stop" number="6"/></direction-type></direction>
     </measure>
     <measure number="84">
-      <note><pitch><step>B</step><octave>4</octave></pitch><duration>2304</duration><tie type="stop"/><voice>1</voice><type>half</type><dot/><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>B</step><octave>4</octave></pitch><duration>2304</duration><tie type="stop"/><voice>1</voice><type>half</type><dot/><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
     </measure>
     <measure number="85">
@@ -468,7 +468,7 @@
     </measure>
     <measure number="88">
       <note><pitch><step>A</step><octave>4</octave></pitch><duration>768</duration><voice>1</voice><type>quarter</type><lyric number="1"><syllabic>single</syllabic><text>past,</text><extend type="start"/></lyric></note>
-      <note><pitch><step>C</step><octave>5</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/></note>
+      <note><pitch><step>C</step><octave>5</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="89">
       <direction placement="below"><direction-type><dynamics><mf/></dynamics></direction-type><sound dynamics="78"/></direction>
@@ -498,7 +498,7 @@
       <note><pitch><step>G</step><octave>4</octave></pitch><duration>3072</duration><tie type="start"/><voice>1</voice><type>whole</type><notations><tied type="start"/></notations><lyric number="1"><syllabic>single</syllabic><text>last.</text><extend type="start"/></lyric></note>
     </measure>
     <measure number="94">
-      <note><pitch><step>G</step><octave>4</octave></pitch><duration>3072</duration><tie type="stop"/><voice>1</voice><type>whole</type><notations><tied type="stop"/></notations><lyric number="1"><syllabic>single</syllabic><text></text><extend type="start"/></lyric></note>
+      <note><pitch><step>G</step><octave>4</octave></pitch><duration>3072</duration><tie type="stop"/><voice>1</voice><type>whole</type><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="95">
       <note><rest measure="yes"/><duration>3072</duration><voice>1</voice></note>
@@ -634,7 +634,7 @@
       <note><pitch><step>F</step><octave>4</octave></pitch><duration>1536</duration><tie type="start"/><voice>1</voice><type>half</type><notations><tied type="start"/></notations></note>
     </measure>
     <measure number="38">
-      <note><pitch><step>F</step><octave>4</octave></pitch><duration>3072</duration><tie type="stop"/><voice>1</voice><type>whole</type><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>F</step><octave>4</octave></pitch><duration>3072</duration><tie type="stop"/><voice>1</voice><type>whole</type><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="39">
       <note><rest measure="yes"/><duration>3072</duration><voice>1</voice></note>
@@ -658,7 +658,7 @@
       <direction placement="below"><direction-type><wedge type="stop" number="2"/></direction-type></direction>
     </measure>
     <measure number="43">
-      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1536</duration><tie type="stop"/><voice>1</voice><type>half</type><notations><tied type="stop"/></notations></note>
+      <note><pitch><step>A</step><octave>4</octave></pitch><duration>1536</duration><tie type="stop"/><voice>1</voice><type>half</type><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
       <note><rest/><duration>1536</duration><voice>1</voice><type>half</type></note>
     </measure>
     <measure number="44">
@@ -778,11 +778,11 @@
       <direction placement="below"><direction-type><wedge type="stop" number="5"/></direction-type></direction>
     </measure>
     <measure number="69">
-      <note><pitch><step>G</step><octave>4</octave></pitch><duration>2304</duration><tie type="stop"/><voice>1</voice><type>half</type><dot/><stem>down</stem><notations><tied type="stop"/></notations><lyric number="1"><syllabic>single</syllabic><text></text><extend type="start"/></lyric></note>
+      <note><pitch><step>G</step><octave>4</octave></pitch><duration>2304</duration><tie type="stop"/><voice>1</voice><type>half</type><dot/><stem>down</stem><notations><tied type="stop"/></notations></note>
       <note><chord/><pitch><step>C</step><octave>5</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/><stem>up</stem></note>
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
       <backup><duration>3072</duration></backup>
-      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2304</duration><voice>3</voice><type>half</type><dot/><stem>down</stem></note>
+      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2304</duration><voice>3</voice><type>half</type><dot/><stem>down</stem><lyric number="1"><extend type="stop"/></lyric></note>
       <forward><duration>768</duration></forward>
     </measure>
     <measure number="70">
@@ -806,7 +806,7 @@
       <note><pitch><step>G</step><octave>4</octave></pitch><duration>1536</duration><tie type="start"/><voice>1</voice><type>half</type><notations><tied type="start"/></notations></note>
     </measure>
     <measure number="75">
-      <note><pitch><step>G</step><octave>4</octave></pitch><duration>3072</duration><tie type="stop"/><voice>1</voice><type>whole</type><notations><tied type="stop"/></notations><lyric number="1"><syllabic>single</syllabic><text></text><extend type="start"/></lyric></note>
+      <note><pitch><step>G</step><octave>4</octave></pitch><duration>3072</duration><tie type="stop"/><voice>1</voice><type>whole</type><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="76">
       <direction placement="below"><direction-type><wedge type="crescendo" number="6"/></direction-type></direction>
@@ -850,7 +850,7 @@
       <direction placement="below"><direction-type><wedge type="stop" number="1"/></direction-type></direction>
     </measure>
     <measure number="84">
-      <note><pitch><step>F</step><alter>1</alter><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/></note>
+      <note><pitch><step>F</step><alter>1</alter><octave>4</octave></pitch><duration>2304</duration><voice>1</voice><type>half</type><dot/><lyric number="1"><extend type="stop"/></lyric></note>
       <note><rest/><duration>768</duration><voice>1</voice><type>quarter</type></note>
     </measure>
     <measure number="85">
@@ -885,7 +885,7 @@
       <note><pitch><step>E</step><octave>4</octave></pitch><duration>3072</duration><voice>1</voice><type>whole</type><stem>up</stem></note>
       <note><chord/><pitch><step>A</step><octave>4</octave></pitch><duration>3072</duration><tie type="stop"/><voice>1</voice><type>whole</type><stem>up</stem><notations><tied type="stop"/></notations></note>
       <backup><duration>3072</duration></backup>
-      <note><pitch><step>C</step><octave>4</octave></pitch><duration>3072</duration><voice>3</voice><type>whole</type><stem>down</stem></note>
+      <note><pitch><step>C</step><octave>4</octave></pitch><duration>3072</duration><voice>3</voice><type>whole</type><stem>down</stem><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="89">
       <note><rest measure="yes"/><duration>3072</duration><voice>1</voice></note>
@@ -908,7 +908,7 @@
       <note><pitch><step>G</step><octave>4</octave></pitch><duration>3072</duration><tie type="start"/><voice>1</voice><type>whole</type><notations><tied type="start"/></notations><lyric number="1"><syllabic>single</syllabic><text>last.</text><extend type="start"/></lyric></note>
     </measure>
     <measure number="94">
-      <note><pitch><step>G</step><octave>4</octave></pitch><duration>3072</duration><tie type="stop"/><voice>1</voice><type>whole</type><notations><tied type="stop"/></notations><lyric number="1"><syllabic>single</syllabic><text></text><extend type="start"/></lyric></note>
+      <note><pitch><step>G</step><octave>4</octave></pitch><duration>3072</duration><tie type="stop"/><voice>1</voice><type>whole</type><notations><tied type="stop"/></notations><lyric number="1"><extend type="stop"/></lyric></note>
     </measure>
     <measure number="95">
       <note><rest measure="yes"/><duration>3072</duration><voice>1</voice></note>

@@ -266,5 +266,8 @@ function tupletNotation(ev: Event, inner = false): string {
 }
 
 function lyricXml(ly: Lyric): string {
-  return `<lyric number="${ly.verse}"><syllabic>${ly.syllabic}</syllabic><text>${esc(ly.text)}</text>${ly.extend ? '<extend type="start"/>' : ''}</lyric>`;
+  // The note a melisma ends on ends the extender line and carries no syllable of its own.
+  if (!ly.text && ly.extend === 'stop') return `<lyric number="${ly.verse}"><extend type="stop"/></lyric>`;
+  const extend = ly.extend ? `<extend type="${ly.extend}"/>` : '';
+  return `<lyric number="${ly.verse}"><syllabic>${ly.syllabic}</syllabic><text>${esc(ly.text)}</text>${extend}</lyric>`;
 }
