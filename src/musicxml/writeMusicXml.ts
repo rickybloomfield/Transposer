@@ -56,6 +56,7 @@ function writePart(out: string[], part: Part): void {
     if (measure.key !== undefined) attrs.push(`      <key><fifths>${measure.key}</fifths><mode>major</mode></key>`);
     if (measure.time) attrs.push(`      <time><beats>${measure.time.beats}</beats><beat-type>${measure.time.beatType}</beat-type></time>`);
     if (firstMeasure && part.staffCount > 1) attrs.push(`      <staves>${part.staffCount}</staves>`);
+    if (firstMeasure && part.transpose) attrs.push(transposeXml(part.transpose));
     measure.staves.forEach((st, i) => {
       if (st.clef) {
         const num = part.staffCount > 1 ? ` number="${i + 1}"` : '';
@@ -83,6 +84,18 @@ function writePart(out: string[], part: Part): void {
     if (multiRestRemaining > 0) multiRestRemaining--;
   }
   out.push('  </part>');
+}
+
+/**
+ * MusicXML splits a transposition into an interval inside the octave plus whole
+ * octaves, so a tenor saxophone is "a major 2nd down, one octave lower".
+ */
+function transposeXml(t: { diatonic: number; chromatic: number }): string {
+  const octaves = Math.trunc(t.diatonic / 7);
+  const diatonic = t.diatonic - 7 * octaves;
+  const chromatic = t.chromatic - 12 * octaves;
+  const octaveEl = octaves ? `<octave-change>${octaves}</octave-change>` : '';
+  return `      <transpose><diatonic>${diatonic}</diatonic><chromatic>${chromatic}</chromatic>${octaveEl}</transpose>`;
 }
 
 interface AccidentalDecision { show?: string; }

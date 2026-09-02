@@ -1,7 +1,8 @@
 # Music Transposer
 
 A small web app that transposes **Personal Composer (.pc)** and **Dorico (.dorico)** sheet music
-to any key in the browser, shows a preview, and lets you download the result as a **PDF** or as
+to any key in the browser — or re-notates a part for a different instrument, picking the right key
+signature and clef — shows a preview, and lets you download the result as a **PDF** or as
 **MusicXML**. Nothing is uploaded anywhere; all parsing, transposition and engraving happen in
 your browser.
 
@@ -14,6 +15,27 @@ your browser.
 
 The MusicXML file can be opened in MuseScore, Dorico, Finale, Sibelius and most other notation
 programs if you want to edit the music further.
+
+## Transposing for another instrument
+
+**Written for** and **Transpose for** re-notate a part for a different instrument. Say the file is a
+viola part in F major: choose **Trumpet in B♭** and the music comes back in G major on a treble
+clef, sounding exactly as it did before. The list covers the orchestra and the concert band —
+woodwinds, brass, pitched percussion, keyboards, strings and voices.
+
+- The instrument the file is already written for is guessed from the part name, the subtitle, the
+  file name or the title, in that order; **Written for** overrides the guess. "Clarinet in B♭",
+  "Bb Clarinet" and "B-flat Clarinet" are all recognized.
+- **Transpose to** then shows the key the new part will be *read* in. The status line underneath
+  the toolbar also reports what it *sounds* like.
+- **Octave** defaults to **Fit range**, which shifts the part by whole octaves when it would
+  otherwise sit outside the new instrument's comfortable range (a violin line handed to a tuba, for
+  example). Pick an explicit shift to override it.
+- With more than one part, **Instrument part** chooses which one is re-notated; the rest keep their
+  own key, so a B♭ trumpet part and its concert-pitch piano accompaniment print together correctly.
+  Changing **Transpose to** still moves the whole score.
+- The exported MusicXML carries a `<transpose>` element, so MuseScore, Dorico, Finale and Sibelius
+  know the part is a transposing one and can switch it to concert pitch themselves.
 
 ## Developing
 
@@ -48,7 +70,8 @@ The build sets the base path from the repository name automatically.
   pairs, not as notated values). This importer is newer and less tested than the `.pc` one.
 - `src/model/` holds a small MusicXML-like score model and the transposition logic
   (`pitch.ts`, `transpose.ts`), including enharmonic simplification when a key change would leave
-  the 7-sharps/7-flats range.
+  the 7-sharps/7-flats range. `instruments.ts` carries the instrument table — each entry's
+  transposition, usual clef, playing range and the patterns used to recognize its name.
 - `src/musicxml/writeMusicXml.ts` serializes the model as MusicXML 3.1, which is what you download
   and also what is handed to [Verovio](https://www.verovio.org/) for engraving.
 - `src/render/` renders pages with Verovio (WebAssembly) and turns the SVG pages into a PDF with
@@ -62,6 +85,10 @@ The build sets the base path from the repository name automatically.
   in the sample files; unusual markings may be dropped (the app lists what it skipped).
 - Only Personal Composer version 3 files (format byte 0x29) are fully supported. Older files load
   with a warning and may be incomplete.
+- Re-notating a part replaces its clef throughout, so clef changes that suited the old instrument
+  (a cello's tenor-clef passage, say) are dropped. Multi-measure rests are also spelled out once the
+  parts of a score end up in different keys, because Verovio otherwise leaves the key signature off
+  those systems.
 - Dorico import handles notes, rests, ties, lyrics, dynamics, hairpins, clefs, key and time
   signatures, tempo text and fermatas. Slurs, tuplets other than triplets, grace notes and
   chord symbols are not imported yet.

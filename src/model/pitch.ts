@@ -48,6 +48,9 @@ export function keyName(fifths: number, mode: 'major' | 'minor' = 'major'): stri
   return mode === 'major' ? `${majorNames[i]} major` : `${minorNames[i]} minor`;
 }
 
+/** Semitones from the tonic to each degree of a major scale. */
+export const DEGREE_SEMITONES = [0, 2, 4, 5, 7, 9, 11];
+
 /**
  * A transposition interval expressed as diatonic steps plus chromatic semitones.
  * e.g. up a major second = { diatonic: 1, chromatic: 2 }.
@@ -57,14 +60,35 @@ export interface Interval {
   chromatic: number;
 }
 
+/** Semitones spanned by `diatonic` steps of a major scale, used to judge an interval's quality. */
+function naturalSemitones(diatonic: number): number {
+  const octaves = Math.floor(diatonic / 7);
+  return 12 * octaves + DEGREE_SEMITONES[diatonic - 7 * octaves];
+}
+
+/**
+ * Move the diatonic size by whole octaves until it matches the semitone count.
+ * Letters that repeat across an accidental (G to G♭) otherwise come out as a
+ * unison spanning eleven semitones, which is not an interval at all.
+ */
+function normalizeSpelling(iv: Interval): Interval {
+  let best = iv;
+  let bestOff = Math.abs(iv.chromatic - naturalSemitones(iv.diatonic));
+  for (const diatonic of [iv.diatonic - 14, iv.diatonic - 7, iv.diatonic + 7, iv.diatonic + 14]) {
+    const off = Math.abs(iv.chromatic - naturalSemitones(diatonic));
+    if (off < bestOff) { best = { diatonic, chromatic: iv.chromatic }; bestOff = off; }
+  }
+  return best;
+}
+
 /** Interval that takes the major key `fromFifths` to `toFifths`, choosing the smaller direction. */
 export function intervalBetweenKeys(fromFifths: number, toFifths: number, preferDirection?: 'up' | 'down'): Interval {
   const a = majorTonic(fromFifths);
   const b = majorTonic(toFifths);
   const semis = ((STEP_SEMITONES[b.step] + b.alter) - (STEP_SEMITONES[a.step] + a.alter) + 12) % 12; // 0..11 upward
   const steps = ((STEPS.indexOf(b.step) - STEPS.indexOf(a.step)) + 7) % 7; // 0..6 upward
-  let up: Interval = { diatonic: steps, chromatic: semis };
-  let down: Interval = { diatonic: steps - 7, chromatic: semis - 12 };
+  const up = normalizeSpelling({ diatonic: steps, chromatic: semis });
+  const down = normalizeSpelling({ diatonic: steps - 7, chromatic: semis - 12 });
   if (semis === 0 && steps === 0) return { diatonic: 0, chromatic: 0 };
   if (preferDirection === 'up') return up;
   if (preferDirection === 'down') return down;

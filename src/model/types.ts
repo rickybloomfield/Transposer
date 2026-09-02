@@ -152,6 +152,11 @@ export interface Part {
   measures: Measure[];
   /** MIDI program (0-based) if known */
   midiProgram?: number;
+  /**
+   * Added to a written pitch to get the sounding pitch, for transposing instruments.
+   * Serialized as the MusicXML `<transpose>` element.
+   */
+  transpose?: { diatonic: number; chromatic: number };
   /** Whether to render as a piano-style bracketed grand staff */
   grandStaff?: boolean;
 }
