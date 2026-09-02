@@ -1,18 +1,13 @@
-# Transposer
+# Music Transposer
 
 A small web app that transposes **Personal Composer (.pc)** and **Dorico (.dorico)** sheet music
 to any key in the browser, shows a preview, and lets you download the result as a **PDF** or as
 **MusicXML**. Nothing is uploaded anywhere; all parsing, transposition and engraving happen in
 your browser.
 
-It was built for people who download the free music at
-[defordmusic.com](https://defordmusic.com/). Personal Composer is discontinued and Windows-only,
-so the `.pc` files there could not be transposed on modern computers without it. This app reads
-the `.pc` files directly.
-
 ## Using it
 
-1. Download the `.pc` (or `.dorico`) version of a song from the song's page.
+1. Download the `.pc` (or `.dorico`) version of a song.
 2. Open the app, drop the file on the page (or click **Choose a file**).
 3. Pick the key you want in **Transpose to**. The preview updates.
 4. Click **Download PDF**, **Download MusicXML**, or **Print**.
@@ -73,6 +68,5 @@ The build sets the base path from the repository name automatically.
 
 ## Test files
 
-`test/fixtures` contains a few small `.pc` part files and one `.dorico` file from
-defordmusic.com, whose music is published with permission for non-commercial copying. They are
-used only to test the parsers.
+`test/fixtures` contains a few small `.pc` part files and one `.dorico` file used only to test the
+parsers.

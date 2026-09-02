@@ -25,7 +25,7 @@ export class App {
   private render(): void {
     this.root.innerHTML = `
       <header class="site">
-        <h1>Transposer</h1>
+        <h1>Music Transposer</h1>
         <p>Transpose Personal Composer (.pc) and Dorico sheet music to any key, preview it, and download a PDF or MusicXML.
            Everything happens in your browser: your files are never uploaded.</p>
       </header>
@@ -33,8 +33,7 @@ export class App {
         <div class="dropzone" id="drop">
           <p class="primary">Drop a <strong>.pc</strong> or <strong>.dorico</strong> file here, or</p>
           <p><label class="button">Choose a file<input type="file" id="file" accept=".pc,.dorico" hidden></label></p>
-          <p>Files from <a href="https://defordmusic.com/" target="_blank" rel="noopener">defordmusic.com</a> work directly: download the <em>.pc</em> or <em>.dorico</em> version of a song and open it here.</p>
-          <p><button class="button secondary" id="example" type="button">Try an example (Be Still, My Soul — viola part)</button></p>
+          <p><button class="button secondary" id="example" type="button">Try an example file</button></p>
         </div>
         <div class="toolbar hidden" id="toolbar">
           <div class="fileinfo" id="fileinfo"></div>
@@ -60,7 +59,6 @@ export class App {
         <div class="pages" id="pages"></div>
       </main>
       <footer class="site">
-        Made for people who use the free music at <a href="https://defordmusic.com/" target="_blank" rel="noopener">Sally DeFord Music</a>.
         Engraving by <a href="https://www.verovio.org/" target="_blank" rel="noopener">Verovio</a>.
         <a href="https://github.com/rickybloomfield/Transposer" target="_blank" rel="noopener">Source on GitHub</a>.
       </footer>`;

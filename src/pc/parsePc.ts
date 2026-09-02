@@ -476,10 +476,6 @@ function extractMetadata(texts: PageText[]): { title?: string; subtitle?: string
     const sub = candidates.find((t) => t !== candidates[0] && t.size < candidates[0].size);
     if (sub) out.subtitle = sub.text.trim();
   }
-  if (!out.composer) {
-    const sally = uniq.find((t) => /Sally DeFord/i.test(t.text));
-    if (sally) out.composer = 'Sally DeFord';
-  }
   return out;
 }
 
